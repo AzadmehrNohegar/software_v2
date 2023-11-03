@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    background-image: url(../patterns/header-bg1.png);
+    background-position: top center;
+    background-size: 100% 40vh;
+    background-repeat: no-repeat;
+    @apply min-h-screen;
+    font-family: Poppins, Helvetica, "sans-serif";
+    background-color: #ebecee;
+  }
+  .container-xxl {
+    max-width: 1320px;
+    @apply mx-auto;
+  }
+}
