@@ -1,14 +1,23 @@
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { DatePicker } from "../../../../components/datepicker";
 import { Dialog } from "../../../../components/dialog";
 import { IExtendedDialogProps } from "../../../../model";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 
 function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   const queryClient = useQueryClient();
 
-  const { register, handleSubmit, setValue } = useForm({
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postCorsoformativoMacchina = async ({ body, id, machineId }: any) => {
+    return await axios.post(
+      `http://54.93.150.247:9980/associazioni/corso/${id}/macchina/${machineId}`,
+      body
+    );
+  };
+
+  ///associazioni/corso/{idCorso}/macchina/{idMacchina}
+  const { register, handleSubmit, setValue, control, getValues } = useForm({
     defaultValues: {
       codiceUnivocoFormazione: "",
       coordinatore: "",
@@ -24,6 +33,11 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
       tipoFormazione: "",
       validita: 0,
       vision: 0,
+      machine: [
+        {
+          idMacchina: "",
+        },
+      ],
     },
   });
 
@@ -34,10 +48,48 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   const createCorsoformativo = useMutation(postCorsoformativo, {
     onSuccess: () => {
+      getValues("machine").map(
+        async (item) =>
+          await postCorsoformativoMacchina({
+            body: {
+              idCorso: "1",
+              idMacchina: item.idMacchina,
+            },
+            id: "1",
+            machineId: item.idMacchina,
+          })
+      );
+
       queryClient.invalidateQueries("corsoformativo-pagination");
       closeModal();
     },
   });
+
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "machine",
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getMacchina = async ({ params }: any) => {
+    return await axios.get("http://54.93.150.247:9980/macchina", {
+      params,
+    });
+  };
+
+  const { data: macchina } = useQuery(
+    "maccina-pagination",
+    () =>
+      getMacchina({
+        params: {
+          p: 0,
+          n: 100,
+        },
+      }),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   return (
     <Dialog isOpen={isOpen} closeModal={closeModal}>
@@ -269,39 +321,35 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
             />
           </div>
         </div>
-        {/* <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4">
           {fields.map((_item, index) => (
             <div
               className="flex flex-col items-start gap-y-2 w-full"
               key={index}
             >
-              <label className="text-sm text-gray-800">Machine</label>
-              <div className="flex items-center w-full gap-x-2">
+              <div className="flex items-end w-full gap-x-2">
                 <Controller
-                  render={({ field }) => (
-                    <select
-                      id={`${index}.inventory`}
-                      className="select select-bordered w-full bg-white"
-                      {...field}
-                    >
-                      <option></option>
-                      <option value="all">
-                        ASR RISCHIO ALTO - MODULO 3 - Anzio - aggiornamento
-                      </option>
-                      <option value="Manager">
-                        CARRELLI ELEVATORI - Modulo pratico (secondo ASR) -
-                        Anzio - aggiornamento
-                      </option>
-                      <option value="Senior Manager">
-                        PROVA ANNUALE EVACUAZIONE - Anzio - aggiornamento
-                      </option>
-                      <option value="Director">
-                        ASR RISCHIO BASSO - MODULO 1 - Anzio - aggiornamento
-                      </option>
-                    </select>
-                  )}
-                  name={`machine.${index}.value`}
                   control={control}
+                  render={({ field }) => (
+                    <div className="flex flex-col items-start gap-y-2 w-full">
+                      <label className="text-sm text-gray-800">Machine</label>
+
+                      <select
+                        id={`${index}.inventory`}
+                        className="select select-bordered w-full bg-white"
+                        {...field}
+                      >
+                        <option></option>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {macchina?.data.data.map((item: any) => (
+                          <option value={item.idMacchina}>
+                            {item.nomeMacchina}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
+                  name={`machine.${index}.idMacchina`}
                 />
                 <button
                   type="button"
@@ -344,13 +392,13 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
             className="btn btn-ghost bg-blue-500 w-fit text-white"
             onClick={() =>
               append({
-                value: "",
+                idMacchina: "",
               })
             }
           >
             Add
           </button>
-        </div> */}
+        </div>
         <button className="btn btn-success btn-green-500 w-fit ms-auto">
           Salva
         </button>

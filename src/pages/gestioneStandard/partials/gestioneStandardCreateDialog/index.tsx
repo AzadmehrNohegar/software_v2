@@ -1,19 +1,86 @@
 import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { Dialog } from "../../../../components/dialog";
 import { IExtendedDialogProps } from "../../../../model";
+import axios from "axios";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 
 function GestioneStandardCreateDialog({
   closeModal,
   isOpen,
 }: IExtendedDialogProps) {
-  const { control } = useForm({
+  const queryClient = useQueryClient();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postAnagrafica = async ({ body }: any) => {
+    return await axios.post("http://54.93.150.247:9980/anagrafica", body);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postAnagraficaMacchina = async ({ body, id, machineId }: any) => {
+    return await axios.post(
+      `http://54.93.150.247:9980/associazioni/anagrafica/${id}/macchina/${machineId}`,
+      body
+    );
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getMacchina = async ({ params }: any) => {
+    return await axios.get("http://54.93.150.247:9980/macchina", {
+      params,
+    });
+  };
+
+  const { register, handleSubmit, control, getValues } = useForm({
     defaultValues: {
+      cittaResidenza: "",
+      codiceFiscale: "",
+      cognome: "",
+      contratto: "",
+      dataFineContratto: "2023-11-03",
+      dataNascita: "2023-11-03",
+      indirizzoResidenza: "",
+      livelloContrattuale: "",
+      mansione: "",
+      nome: "",
+      numeroTelefono: "",
       machine: [
         {
-          value: "",
-          ip: "",
+          idMacchina: "",
         },
       ],
+    },
+  });
+
+  const { data: macchina } = useQuery(
+    "maccina-pagination",
+    () =>
+      getMacchina({
+        params: {
+          p: 0,
+          n: 100,
+        },
+      }),
+    {
+      keepPreviousData: true,
+    }
+  );
+
+  const createAnagrafica = useMutation(postAnagrafica, {
+    onSuccess: async () => {
+      getValues("machine").map(
+        async (item) =>
+          await postAnagraficaMacchina({
+            body: {
+              idAnagrafica: "1",
+              idMacchina: item.idMacchina,
+            },
+            id: "1",
+            machineId: item.idMacchina,
+          })
+      );
+
+      queryClient.invalidateQueries("anagrafica-pagination");
+      closeModal();
     },
   });
 
@@ -65,24 +132,46 @@ function GestioneStandardCreateDialog({
       <Dialog.Panel
         as="form"
         className="p-2 sm:px-16 sm:py-8 flex flex-col gap-y-4"
+        onSubmit={handleSubmit((values) =>
+          createAnagrafica.mutate({
+            body: {
+              ...values,
+            },
+          })
+        )}
       >
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Cognome:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("cognome", {
+                required: true,
+              })}
+            />
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Nome:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("nome", {
+                required: true,
+              })}
+            />
           </div>
         </div>
 
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
-            <label className="text-sm text-gray-800">Reparto:</label>
-            <input className="input input-bordered w-full" />
+            <label className="text-sm text-gray-800">Citta:</label>
+            <input
+              className="input input-bordered w-full"
+              {...register("cittaResidenza", {
+                required: true,
+              })}
+            />
           </div>
-          <div className="flex flex-col justify-start items-start gap-x-2 w-full">
+          {/* <div className="flex flex-col justify-start items-start gap-x-2 w-full">
             <label className="text-sm text-gray-800">Safety:</label>
             <div className="flex">
               <div className="form-control">
@@ -108,7 +197,7 @@ function GestioneStandardCreateDialog({
                 </label>
               </div>
             </div>
-          </div>
+          </div> */}
         </div>
 
         <div className="flex flex-col gap-y-4">
@@ -129,29 +218,18 @@ function GestioneStandardCreateDialog({
                         {...field}
                       >
                         <option></option>
-                        <option value="all">
-                          ASR RISCHIO ALTO - MODULO 3 - Anzio - aggiornamento
-                        </option>
-                        <option value="Manager">
-                          CARRELLI ELEVATORI - Modulo pratico (secondo ASR) -
-                          Anzio - aggiornamento
-                        </option>
-                        <option value="Senior Manager">
-                          PROVA ANNUALE EVACUAZIONE - Anzio - aggiornamento
-                        </option>
-                        <option value="Director">
-                          ASR RISCHIO BASSO - MODULO 1 - Anzio - aggiornamento
-                        </option>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {macchina?.data.data.map((item: any) => (
+                          <option value={item.idMacchina}>
+                            {item.nomeMacchina}
+                          </option>
+                        ))}
                       </select>
                     </div>
                   )}
-                  name={`machine.${index}.value`}
+                  name={`machine.${index}.idMacchina`}
                   control={control}
                 />
-                <div className="flex flex-col items-start gap-y-2 w-1/3">
-                  <label className="text-sm text-gray-800">IP:</label>
-                  <input className="input input-bordered w-full" />
-                </div>
                 <button
                   type="button"
                   className="btn btn-ghost bg-red-100 text-red-500 p-1 rounded-md btn-square"
@@ -193,8 +271,7 @@ function GestioneStandardCreateDialog({
             className="btn btn-ghost bg-blue-500 w-fit text-white"
             onClick={() =>
               append({
-                value: "",
-                ip: "",
+                idMacchina: "",
               })
             }
           >

@@ -22,7 +22,7 @@ function Layout() {
           >
             Dashboard
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/personal-info"
             end
             className={({ isActive }) =>
@@ -45,7 +45,7 @@ function Layout() {
             }
           >
             Esigenze Formative
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/standard"
             end
@@ -70,7 +70,7 @@ function Layout() {
           >
             Gestione Standard
           </NavLink>
-          <NavLink
+          {/* <NavLink
             to="/storico-formazione"
             end
             className={({ isActive }) =>
@@ -82,7 +82,7 @@ function Layout() {
             onClick={(e) => e.preventDefault()}
           >
             Storico formazione
-          </NavLink>
+          </NavLink> */}
           <NavLink
             to="/machine"
             end
