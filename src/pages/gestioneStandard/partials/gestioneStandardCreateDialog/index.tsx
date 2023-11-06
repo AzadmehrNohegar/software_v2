@@ -66,18 +66,21 @@ function GestioneStandardCreateDialog({
   );
 
   const createAnagrafica = useMutation(postAnagrafica, {
-    onSuccess: async () => {
-      getValues("machine").map(
-        async (item) =>
-          await postAnagraficaMacchina({
-            body: {
-              idAnagrafica: "1",
-              idMacchina: item.idMacchina,
-            },
-            id: "1",
-            machineId: item.idMacchina,
-          })
-      );
+    onSuccess: async (res) => {
+      if (res?.data) {
+        const { idAnagrafica } = res.data.data;
+        getValues("machine").map(
+          async (item) =>
+            await postAnagraficaMacchina({
+              body: {
+                idAnagrafica,
+                idMacchina: item.idMacchina,
+              },
+              id: idAnagrafica,
+              machineId: item.idMacchina,
+            })
+        );
+      }
 
       queryClient.invalidateQueries("anagrafica-pagination");
       closeModal();

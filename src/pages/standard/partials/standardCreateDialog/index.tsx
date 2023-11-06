@@ -47,18 +47,21 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   };
 
   const createCorsoformativo = useMutation(postCorsoformativo, {
-    onSuccess: () => {
-      getValues("machine").map(
-        async (item) =>
-          await postCorsoformativoMacchina({
-            body: {
-              idCorso: "1",
-              idMacchina: item.idMacchina,
-            },
-            id: "1",
-            machineId: item.idMacchina,
-          })
-      );
+    onSuccess: (res) => {
+      if (res?.data) {
+        const { idCorsoFormativo } = res.data.data;
+        getValues("machine").map(
+          async (item) =>
+            await postCorsoformativoMacchina({
+              body: {
+                idCorso: idCorsoFormativo,
+                idMacchina: item.idMacchina,
+              },
+              id: idCorsoFormativo,
+              machineId: item.idMacchina,
+            })
+        );
+      }
 
       queryClient.invalidateQueries("corsoformativo-pagination");
       closeModal();

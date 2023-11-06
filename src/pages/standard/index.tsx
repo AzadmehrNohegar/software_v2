@@ -19,7 +19,7 @@ function Standard() {
   const { search } = useLocation();
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getMacchina = async ({ params }: any) => {
+  const getCorsoformativo = async ({ params }: any) => {
     return await axios.get("http://54.93.150.247:9980/corsoformativo", {
       params,
     });
@@ -28,7 +28,7 @@ function Standard() {
   const { data: corsformativo } = useQuery(
     ["corsoformativo-pagination", search],
     () =>
-      getMacchina({
+      getCorsoformativo({
         params: {
           p: searchParams.get("page") || 0,
           n: 10,
