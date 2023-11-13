@@ -1,0 +1,7 @@
+version: "3.8"
+services:
+  software:
+    build: .
+    container_name: software_v2
+    ports:
+      - "4200:4200"

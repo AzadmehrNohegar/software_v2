@@ -1,15 +1,13 @@
 FROM node:18-alpine
 
-WORKDIR /app
+EXPOSE 4200
+
+WORKDIR /src
 
 COPY package.json .
 
-RUN npm install
+RUN yarn install
 
 COPY . .
 
-RUN npm run build
-
-EXPOSE 4200
-
-CMD [ "npm", "run", "preview" ]
+CMD [ "yarn","build"]
