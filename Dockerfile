@@ -10,4 +10,4 @@ RUN yarn install
 
 COPY . .
 
-CMD [ "yarn","build"]
+CMD [ "yarn","dev","--debug"]
