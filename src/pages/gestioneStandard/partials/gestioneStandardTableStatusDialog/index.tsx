@@ -13,7 +13,7 @@ function GestioneStandardTableStatusDialog({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getAnagrafica = async ({ params }: any) => {
     return await axios.get(
-      `http://54.93.150.247:9980/associazioni/anagrafica/${searchParams.get(
+      `http://3.76.7.86:9980/associazioni/anagrafica/${searchParams.get(
         "machine"
       )}/macchina`,
       {

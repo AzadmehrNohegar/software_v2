@@ -12,20 +12,20 @@ function GestioneStandardCreateDialog({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postAnagrafica = async ({ body }: any) => {
-    return await axios.post("http://54.93.150.247:9980/anagrafica", body);
+    return await axios.post("http://3.76.7.86:9980/anagrafica", body);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postAnagraficaMacchina = async ({ body, id, machineId }: any) => {
     return await axios.post(
-      `http://54.93.150.247:9980/associazioni/anagrafica/${id}/macchina/${machineId}`,
+      `http://3.76.7.86:9980/associazioni/anagrafica/${id}/macchina/${machineId}`,
       body
     );
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getMacchina = async ({ params }: any) => {
-    return await axios.get("http://54.93.150.247:9980/macchina", {
+    return await axios.get("http://3.76.7.86:9980/macchina", {
       params,
     });
   };

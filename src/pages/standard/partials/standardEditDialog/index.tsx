@@ -12,12 +12,12 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const putCorsoformativo = async ({ body }: any) => {
-    return await axios.put(`http://54.93.150.247:9980/corsoformativo/`, body);
+    return await axios.put(`http://3.76.7.86:9980/corsoformativo/`, body);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getCorsoformativoById = async ({ id }: any) => {
-    return await axios.get(`http://54.93.150.247:9980/corsoformativo/${id}`);
+    return await axios.get(`http://3.76.7.86:9980/corsoformativo/${id}`);
   };
 
   const { data: corsoformativoById } = useQuery(

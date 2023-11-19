@@ -9,7 +9,7 @@ function MachineCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postMacchina = async ({ body }: any) => {
-    return await axios.post("http://54.93.150.247:9980/macchina", body);
+    return await axios.post("http://3.76.7.86:9980/macchina", body);
   };
 
   const createMachine = useMutation(postMacchina, {

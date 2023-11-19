@@ -20,7 +20,7 @@ function Standard() {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getCorsoformativo = async ({ params }: any) => {
-    return await axios.get("http://54.93.150.247:9980/corsoformativo", {
+    return await axios.get("http://3.76.7.86:9980/corsoformativo", {
       params,
     });
   };

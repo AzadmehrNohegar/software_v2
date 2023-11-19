@@ -11,7 +11,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postCorsoformativoMacchina = async ({ body, id, machineId }: any) => {
     return await axios.post(
-      `http://54.93.150.247:9980/associazioni/corso/${id}/macchina/${machineId}`,
+      `http://3.76.7.86:9980/associazioni/corso/${id}/macchina/${machineId}`,
       body
     );
   };
@@ -43,7 +43,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const postCorsoformativo = async ({ body }: any) => {
-    return await axios.post("http://54.93.150.247:9980/corsoformativo", body);
+    return await axios.post("http://3.76.7.86:9980/corsoformativo", body);
   };
 
   const createCorsoformativo = useMutation(postCorsoformativo, {
@@ -75,7 +75,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getMacchina = async ({ params }: any) => {
-    return await axios.get("http://54.93.150.247:9980/macchina", {
+    return await axios.get("http://3.76.7.86:9980/macchina", {
       params,
     });
   };
