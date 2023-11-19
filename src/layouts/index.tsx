@@ -20,7 +20,7 @@ function Layout() {
               )
             }
           >
-            Dashboard
+            Standard
           </NavLink>
           {/* <NavLink
             to="/personal-info"
@@ -46,18 +46,6 @@ function Layout() {
           >
             Esigenze Formative
           </NavLink> */}
-          <NavLink
-            to="/standard"
-            end
-            className={({ isActive }) =>
-              clsx(
-                "btn btn-ghost font-normal text-white hover:bg-white hover:bg-opacity-10 text-[13px] py-2 h-10 btn-sm hidden sm:inline-flex",
-                isActive && "bg-white bg-opacity-10"
-              )
-            }
-          >
-            Standard
-          </NavLink>
           <NavLink
             to="/gestione-standard"
             end
