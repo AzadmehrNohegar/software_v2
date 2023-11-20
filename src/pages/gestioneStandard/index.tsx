@@ -90,7 +90,7 @@ function GestioneStandard() {
                   <td className="border-start px-5 py-4 border text-[13px] border-slate-100">
                     {item.cognome}
                   </td>
-                  <td className="border-start px-5 py-4 border text-[13px] border-slate-100">
+                  <td className="border-start px-5 py-4 border text-[13px] border-slate-100 w-full">
                     {item.nome}
                   </td>
                   <td className="border-start px-5 py-4 border text-[13px] border-slate-100">

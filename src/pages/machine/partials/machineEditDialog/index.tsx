@@ -11,7 +11,7 @@ function MachineEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const patchMacchina = async ({ body }: any) => {
-    return await axios.put(`http://3.76.7.86:9980/macchina/`, body);
+    return await axios.put(`http://3.76.7.86:9980/macchina`, body);
   };
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -93,6 +93,7 @@ function MachineEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
         onSubmit={handleSubmit((values) =>
           editMachine.mutate({
             body: {
+              idMacchina: searchParams.get("id"),
               descrizioneMacchina: "",
               nomeMacchina: values.nomeMacchina,
             },
