@@ -22,7 +22,7 @@ function Layout() {
           >
             Standard
           </NavLink>
-          {/* <NavLink
+          <NavLink
             to="/personal-info"
             end
             className={({ isActive }) =>
@@ -34,7 +34,7 @@ function Layout() {
           >
             Personal Info
           </NavLink>
-          <NavLink
+          {/*  <NavLink
             to="/esigenze-formative"
             end
             className={({ isActive }) =>
