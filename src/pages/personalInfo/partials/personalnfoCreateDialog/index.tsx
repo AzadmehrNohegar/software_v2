@@ -1,11 +1,52 @@
+import { useForm } from "react-hook-form";
 import { DatePicker } from "../../../../components/datepicker";
 import { Dialog } from "../../../../components/dialog";
 import { IExtendedDialogProps } from "../../../../model";
+import { useMutation, useQueryClient } from "react-query";
+import axios from "axios";
 
 function PersonalInfoCreateDialog({
   closeModal,
   isOpen,
 }: IExtendedDialogProps) {
+  const queryClient = useQueryClient();
+
+  const { register, setValue, handleSubmit } = useForm({
+    defaultValues: {
+      cittaResidenza: "",
+      codiceFiscale: "",
+      cognome: "",
+      contratto: "",
+      dataFineContratto: "2023-11-23",
+      dataNascita: "2023-11-23",
+      indirizzoResidenza: "",
+      livelloContrattuale: "",
+      mansione: "",
+      nome: "",
+      numeroTelefono: "",
+    },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postAnagrafica = async ({ body }: any) => {
+    return await axios.post("http://3.76.7.86:9980/anagrafica", body);
+  };
+
+  const createAnagrafica = useMutation(postAnagrafica, {
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+      closeModal();
+    },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const onSubmit = (values: any) =>
+    createAnagrafica.mutate({
+      body: {
+        ...values,
+      },
+    });
+
   return (
     <Dialog isOpen={isOpen} closeModal={closeModal}>
       <Dialog.Title
@@ -49,45 +90,67 @@ function PersonalInfoCreateDialog({
       <Dialog.Panel
         as="form"
         className="p-2 sm:px-16 sm:py-8 flex flex-col gap-y-4"
+        onSubmit={handleSubmit(onSubmit)}
       >
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Nome:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("nome")}
+            />
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Cognome:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("cognome")}
+            />
           </div>
         </div>
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Codice Fiscale:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("codiceFiscale")}
+            />
           </div>
-          <div className="flex flex-col items-start gap-y-2 w-full">
+          {/* <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Email:</label>
-            <input className="input input-bordered w-full" />
-          </div>
+            <input className="input input-bordered w-full" {...register("")} />
+          </div> */}
         </div>
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Mansione:</label>
-            <select className="select select-bordered w-full bg-white">
+            <select
+              className="select select-bordered w-full bg-white"
+              {...register("mansione")}
+            >
               <option></option>
-              <option value="manager">Manager</option>
-              <option value="Senior Manager">Senior Manager</option>
-              <option value="Director">Director</option>
+              <option value="Resp. Sicurezza">Resp. Sicurezza</option>
+              <option value="Product & Process Coordinator">
+                Product & Process Coordinator
+              </option>
+              <option value="Capo Turno">Capo Turno</option>
+              <option value="Quality Manager">Quality Manager</option>
+              <option value="Production Manager">Production Manager</option>
+              <option value="General Manager">General Manager</option>
+              <option value="Ufficio tecnico">Ufficio tecnico</option>
+              <option value="Human Resource">Human Resource</option>
             </select>
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Tipo di contratto:</label>
-            <select className="select select-bordered w-full bg-white">
+            <select
+              className="select select-bordered w-full bg-white"
+              {...register("contratto")}
+            >
               <option></option>
-              <option value="tempo">Tempo Determinato</option>
-              <option value="manager">Manager</option>
-              <option value="Senior Manager">Senior Manager</option>
-              <option value="Director">Director</option>
+              <option value="Determinato">Determinato</option>
+              <option value="Interinale">Interinale</option>
+              <option value="Somministrazione">Somministrazione</option>
             </select>
           </div>
         </div>
@@ -97,44 +160,78 @@ function PersonalInfoCreateDialog({
             <label className="text-sm text-gray-800">
               Livello Contrattuale:
             </label>
-            <select className="select select-bordered w-full bg-white">
+            <select
+              className="select select-bordered w-full bg-white"
+              {...register("livelloContrattuale")}
+            >
               <option></option>
-              <option value="tempo">Tempo Determinato</option>
-              <option value="manager">Manager</option>
-              <option value="Senior Manager">Senior Manager</option>
-              <option value="Director">Director</option>
+              <option value="1">1</option>
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="A">A</option>
+              <option value="B">B</option>
+              <option value="IP">IP</option>
             </select>
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">
               Data fine contratto:
             </label>
-            <DatePicker placeholder="Pick a date" />
+            <DatePicker
+              placeholder="Pick a date"
+              onChange={(val) => {
+                const date = new Date(val?.toString() || "");
+                setValue(
+                  "dataFineContratto",
+                  `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`
+                );
+              }}
+            />
           </div>
         </div>
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Numero Telefono:</label>
-            <input type="number" className="input input-bordered w-full" />
+            <input
+              type="number"
+              className="input input-bordered w-full"
+              {...register("numeroTelefono")}
+            />
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Data Nascità:</label>
-            <DatePicker placeholder="Pick a date" />
+            <DatePicker
+              placeholder="Pick a date"
+              onChange={(val) => {
+                const date = new Date(val?.toString() || "");
+                setValue(
+                  "dataNascita",
+                  `${date.getUTCFullYear()}-${date.getUTCMonth()}-${date.getUTCDate()}`
+                );
+              }}
+            />
           </div>
         </div>
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-1/3">
             <label className="text-sm text-gray-800">Citta Residenza:</label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("cittaResidenza")}
+            />
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">
               Indirizzo Residenza:
             </label>
-            <input className="input input-bordered w-full" />
+            <input
+              className="input input-bordered w-full"
+              {...register("indirizzoResidenza")}
+            />
           </div>
         </div>
-        <button className="btn btn-success btn-green-500 w-fit ms-auto">
+        <button className="btn btn-success btn-green-600 w-fit ms-auto">
           Salva
         </button>
       </Dialog.Panel>

@@ -281,7 +281,7 @@ function GestioneStandardCreateDialog({
             Add
           </button>
         </div>
-        <button className="btn btn-success btn-green-500 w-fit ms-auto">
+        <button className="btn btn-success btn-green-600 w-fit ms-auto">
           Salva
         </button>
       </Dialog.Panel>

@@ -53,7 +53,7 @@ function MachineEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
         as="h2"
         className="p-5 flex items-center w-full justify-between border-b border-b-black border-opacity-10 font-semibold"
       >
-        <span>Nuova Risorsa</span>
+        <span>Nuova Macchina</span>
         <button
           className="btn btn-ghost btn-link decoration-transparent"
           onClick={closeModal}
@@ -112,7 +112,7 @@ function MachineEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
           </div>
         </div>
 
-        <button className="btn btn-success btn-green-500 w-fit ms-auto">
+        <button className="btn btn-success btn-green-600 w-fit ms-auto">
           Salva
         </button>
       </Dialog.Panel>

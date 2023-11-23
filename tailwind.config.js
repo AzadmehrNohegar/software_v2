@@ -20,7 +20,7 @@ export default {
           "accent-content": "#60626C",
           info: "#0073ff",
           "info-content": "#0050b3",
-          success: "#43d691",
+          success: "#538B7E",
           "success-content": "#F7F7F8",
           warning: "#ffcc33",
           "warning-content": "#F7F7F8",

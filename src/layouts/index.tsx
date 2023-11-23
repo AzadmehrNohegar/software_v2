@@ -34,7 +34,7 @@ function Layout() {
           >
             Personal Info
           </NavLink>
-          {/*  <NavLink
+          <NavLink
             to="/esigenze-formative"
             end
             className={({ isActive }) =>
@@ -45,7 +45,7 @@ function Layout() {
             }
           >
             Esigenze Formative
-          </NavLink> */}
+          </NavLink>
           <NavLink
             to="/gestione-standard"
             end

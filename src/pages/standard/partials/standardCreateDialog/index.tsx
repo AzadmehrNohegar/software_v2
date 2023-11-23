@@ -100,7 +100,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
         as="h2"
         className="p-5 flex items-center w-full justify-between border-b border-b-black border-opacity-10 font-semibold"
       >
-        <span>Nuova Risorsa</span>
+        <span>Nuova Standard</span>
         <button
           className="btn btn-ghost btn-link decoration-transparent"
           onClick={closeModal}
@@ -155,19 +155,13 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
               })}
             >
               <option></option>
-              <option value="all">
-                ASR RISCHIO ALTO - MODULO 3 - Anzio - aggiornamento
-              </option>
-              <option value="Manager">
-                CARRELLI ELEVATORI - Modulo pratico (secondo ASR) - Anzio -
-                aggiornamento
-              </option>
-              <option value="Senior Manager">
-                PROVA ANNUALE EVACUAZIONE - Anzio - aggiornamento
-              </option>
-              <option value="Director">
-                ASR RISCHIO BASSO - MODULO 1 - Anzio - aggiornamento
-              </option>
+              PSA NIS PS MG NI WI
+              <option value="PSA">PSA</option>
+              <option value="NIS">NIS</option>
+              <option value="PS">PS </option>
+              <option value="MG">MG</option>
+              <option value="NI">NI</option>
+              <option value="WI">WI</option>
             </select>
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
@@ -205,19 +199,45 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
               })}
             >
               <option selected></option>
-              <option value="all">
-                ASR RISCHIO ALTO - MODULO 3 - Anzio - aggiornamento
+              <option value="Resp. Sicurezza">Resp. Sicurezza</option>
+              <option value="Product & Process Coordinator">
+                Product & Process Coordinator
               </option>
-              <option value="Manager">
-                CARRELLI ELEVATORI - Modulo pratico (secondo ASR) - Anzio -
-                aggiornamento
-              </option>
-              <option value="Senior Manager">
-                PROVA ANNUALE EVACUAZIONE - Anzio - aggiornamento
-              </option>
-              <option value="Director">
-                ASR RISCHIO BASSO - MODULO 1 - Anzio - aggiornamento
-              </option>
+              <option value="Capo Turno">Capo Turno</option>
+              <option value="Quality Manager">Quality Manager</option>
+              <option value="Production Manager">Production Manager</option>
+              <option value="General Manager">General Manager</option>
+              <option value="Ufficio tecnico">Ufficio tecnico</option>
+              <option value="Human Resource">Human Resource</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex gap-x-4 items-center">
+          <div className="flex flex-col items-start gap-y-2 w-full">
+            <label className="text-sm text-gray-800">Durata</label>
+            <input
+              className="input input-bordered w-full"
+              {...register("durata", {
+                required: true,
+              })}
+            />
+          </div>
+          <div className="flex flex-col items-start gap-y-2 w-full">
+            <label className="text-sm text-gray-800">Validata:</label>
+            <select
+              className="select select-bordered w-full bg-white"
+              {...register("validita", {
+                required: true,
+              })}
+            >
+              <option selected></option>
+              <option value="1">Annuale</option>
+              <option value="2">Semestrale</option>
+              <option value="3">Trimestrale</option>
+              <option value="4">Bimestrale</option>
+              <option value="5">Mensile</option>
+              <option value="6">Settimanale</option>
             </select>
           </div>
         </div>
@@ -402,7 +422,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
             Add
           </button>
         </div>
-        <button className="btn btn-success btn-green-500 w-fit ms-auto">
+        <button className="btn btn-success btn-green-600 w-fit ms-auto">
           Salva
         </button>
       </Dialog.Panel>
