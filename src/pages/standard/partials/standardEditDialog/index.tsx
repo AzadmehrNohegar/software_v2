@@ -1,4 +1,4 @@
-import { useForm } from "react-hook-form";
+import { Controller, useFieldArray, useForm } from "react-hook-form";
 import { DatePicker } from "../../../../components/datepicker";
 import { Dialog } from "../../../../components/dialog";
 import { IExtendedDialogProps } from "../../../../model";
@@ -9,6 +9,50 @@ import { useSearchParams } from "react-router-dom";
 function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   const queryClient = useQueryClient();
   const [searchParams] = useSearchParams();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getCorsoformativoMacchina = async ({ id, params }: any) => {
+    return await axios.get(
+      `http://3.76.7.86:9980/associazioni/corso/${id}/macchina/`,
+      {
+        params,
+      }
+    );
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const deleteCorsoformativoMacchinaById = async ({ id, machineID }: any) => {
+    return await axios.delete(
+      `http://3.76.7.86:9980/associazioni/corso/${id}/macchina/${machineID}`
+    );
+  };
+
+  const deleteMachine = useMutation(deleteCorsoformativoMacchinaById, {
+    onSuccess: () => {
+      queryClient.invalidateQueries();
+    },
+  });
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getMacchina = async ({ params }: any) => {
+    return await axios.get("http://3.76.7.86:9980/macchina", {
+      params,
+    });
+  };
+
+  const { data: macchina } = useQuery(
+    "maccina-pagination",
+    () =>
+      getMacchina({
+        params: {
+          p: 0,
+          n: 100,
+        },
+      }),
+    {
+      keepPreviousData: true,
+    }
+  );
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const putCorsoformativo = async ({ body }: any) => {
@@ -28,7 +72,7 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
     }
   );
 
-  const { register, handleSubmit, setValue } = useForm({
+  const { register, handleSubmit, setValue, control, getValues } = useForm({
     defaultValues: {
       codiceUnivocoFormazione: "",
       coordinatore: "",
@@ -44,6 +88,11 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
       tipoFormazione: "",
       validita: 0,
       vision: 0,
+      machine: [] as unknown as {
+        idMacchina: string | null;
+        nomeMacchina: string;
+        disabled: boolean;
+      }[],
     },
     values: {
       codiceUnivocoFormazione:
@@ -65,8 +114,67 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
     },
   });
 
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "machine",
+  });
+
+  useQuery(
+    `corsoformativo-${searchParams.get("id")}-machine`,
+    () =>
+      getCorsoformativoMacchina({
+        id: searchParams.get("id"),
+        params: {
+          p: 0,
+          n: 100,
+        },
+      }),
+    {
+      enabled: !!searchParams.get("id"),
+      onSuccess: (res) => {
+        if (res?.data.data) {
+          setValue("machine", []);
+          res.data.data.forEach(
+            (item: { idMacchina: string; nomeMacchina: string }) =>
+              append({
+                idMacchina: item.idMacchina,
+                nomeMacchina: item.nomeMacchina,
+                disabled: true,
+              })
+          );
+        }
+      },
+    }
+  );
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const postCorsoformativoMacchina = async ({ body, id, machineId }: any) => {
+    return await axios.post(
+      `http://3.76.7.86:9980/associazioni/corso/${id}/macchina/${machineId}`,
+      body
+    );
+  };
+
   const editCorsoformativo = useMutation(putCorsoformativo, {
-    onSuccess: () => {
+    onSuccess: (res) => {
+      if (res?.data) {
+        const { idCorsoFormativo } = res.data.data;
+        console.log(getValues().machine);
+        getValues()
+          .machine!.filter((entry) => !entry.disabled)
+          .map(
+            async (item) =>
+              await postCorsoformativoMacchina({
+                body: {
+                  idCorso: idCorsoFormativo,
+                  idMacchina: item.idMacchina,
+                },
+                id: idCorsoFormativo,
+                machineId: item.idMacchina,
+              })
+          );
+      }
+
       queryClient.invalidateQueries("corsoformativo-pagination");
       closeModal();
     },
@@ -210,12 +318,12 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
               })}
             >
               <option selected></option>
-              <option value="Annuale">Annuale</option>
-              <option value="Semestrale">Semestrale</option>
-              <option value="Trimestrale">Trimestrale</option>
-              <option value="Bimestrale">Bimestrale</option>
-              <option value="Mensile">Mensile</option>
-              <option value="Settimanale">Settimanale</option>
+              <option value="1">Annuale</option>
+              <option value="2">Semestrale</option>
+              <option value="3">Trimestrale</option>
+              <option value="4">Bimestrale</option>
+              <option value="5">Mensile</option>
+              <option value="6">Settimanale</option>
             </select>
           </div>
         </div>
@@ -322,44 +430,46 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
             />
           </div>
         </div>
-        {/* <div className="flex flex-col gap-y-4">
+        <div className="flex flex-col gap-y-4">
           {fields.map((_item, index) => (
             <div
               className="flex flex-col items-start gap-y-2 w-full"
               key={index}
             >
-              <label className="text-sm text-gray-800">Machine</label>
-              <div className="flex items-center w-full gap-x-2">
+              <div className="flex items-end w-full gap-x-2">
                 <Controller
-                  render={({ field }) => (
-                    <select
-                      id={`${index}.inventory`}
-                      className="select select-bordered w-full bg-white"
-                      {...field}
-                    >
-                      <option></option>
-                      <option value="all">
-                        ASR RISCHIO ALTO - MODULO 3 - Anzio - aggiornamento
-                      </option>
-                      <option value="Manager">
-                        CARRELLI ELEVATORI - Modulo pratico (secondo ASR) -
-                        Anzio - aggiornamento
-                      </option>
-                      <option value="Senior Manager">
-                        PROVA ANNUALE EVACUAZIONE - Anzio - aggiornamento
-                      </option>
-                      <option value="Director">
-                        ASR RISCHIO BASSO - MODULO 1 - Anzio - aggiornamento
-                      </option>
-                    </select>
-                  )}
-                  name={`machine.${index}.value`}
                   control={control}
+                  name={`machine.${index}.idMacchina`}
+                  render={({ field: { value, ...rest } }) => (
+                    <div className="flex flex-col items-start gap-y-2 w-full">
+                      <select
+                        value={value || ""}
+                        disabled={_item.disabled}
+                        className="select select-bordered w-full bg-white"
+                        {...rest}
+                      >
+                        <option>{_item.nomeMacchina || ""}</option>
+                        {/* eslint-disable-next-line @typescript-eslint/no-explicit-any */}
+                        {macchina?.data.data.map((item: any) => (
+                          <option value={item.idMacchina} key={item.idMacchina}>
+                            {item.nomeMacchina}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
                 />
                 <button
                   type="button"
                   className="btn btn-ghost bg-red-100 text-red-500 p-1 rounded-md btn-square"
-                  onClick={() => remove(index)}
+                  onClick={() => {
+                    if (_item.disabled)
+                      deleteMachine.mutate({
+                        id: searchParams.get("id"),
+                        machineID: _item.idMacchina,
+                      });
+                    remove(index);
+                  }}
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -397,13 +507,15 @@ function StandardEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
             className="btn btn-ghost bg-blue-500 w-fit text-white"
             onClick={() =>
               append({
-                value: "",
+                idMacchina: null,
+                nomeMacchina: "",
+                disabled: false,
               })
             }
           >
             Add
           </button>
-        </div> */}
+        </div>
         <button className="btn btn-success btn-green-600 w-fit ms-auto">
           Salva
         </button>
