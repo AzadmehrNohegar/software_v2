@@ -4,17 +4,18 @@ import {
   default as MultiDatePicker,
 } from "react-multi-date-picker";
 import clsx from "clsx";
-import { useRef } from "react";
+import React, { useRef } from "react";
 import "react-multi-date-picker/styles/colors/teal.css";
 
 type CalendarPropsGeneral = DatePickerProps & CalendarProps;
 interface IDatePicker extends CalendarPropsGeneral {
   containerClassName?: string;
+  iconEnd?: React.ReactNode;
 }
 
 function DatePicker(props: IDatePicker) {
   const ref = useRef<HTMLDivElement>(null);
-  const { containerClassName, ...rest } = props;
+  const { containerClassName, iconEnd, ...rest } = props;
 
   return (
     <div
@@ -34,6 +35,7 @@ function DatePicker(props: IDatePicker) {
         inputClass="w-full px-3 py-[11px] outline-none border-none relative z-10 rounded-lg"
         {...rest}
       />
+      {iconEnd}
     </div>
   );
 }

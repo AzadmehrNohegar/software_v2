@@ -32,7 +32,7 @@ function Layout() {
               )
             }
           >
-            Personal Info
+            Anagrafica
           </NavLink>
           <NavLink
             to="/esigenze-formative"

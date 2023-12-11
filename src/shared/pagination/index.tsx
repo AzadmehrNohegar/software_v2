@@ -47,13 +47,14 @@ function Pagination({
               className={clsx(
                 "btn btn-sm btn-square rounded-md font-light",
                 !(page === index) && "btn-ghost",
-                page === index && "bg-blue-500 text-white"
+                page === index && "btn-success text-white"
               )}
               onClick={() => setPage(index)}
             >
               {index + 1}
             </button>
           ))}
+
         <button
           className="btn btn-md btn-square btn-ghost"
           disabled={!next}

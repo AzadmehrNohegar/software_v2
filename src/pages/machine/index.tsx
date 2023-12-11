@@ -88,7 +88,7 @@ function Machine() {
                     align="right"
                   >
                     <button
-                      className="btn p-0 text-warning btn-ghost btn-link decoration-transparent"
+                      className="btn p-0 text-success btn-ghost btn-link decoration-transparent"
                       onClick={() => {
                         searchParams.set("id", String(item.idMacchina));
                         setSearchParams(searchParams);

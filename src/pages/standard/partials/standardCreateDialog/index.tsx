@@ -17,7 +17,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   };
 
   ///associazioni/corso/{idCorso}/macchina/{idMacchina}
-  const { register, handleSubmit, setValue, control, getValues } = useForm({
+  const { register, handleSubmit, control, getValues, reset } = useForm({
     defaultValues: {
       codiceUnivocoFormazione: "",
       coordinatore: "",
@@ -25,7 +25,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
       durata: 0,
       emissione: "string",
       idCorsoFormativo: 0,
-      managment: 0,
+      managment: "false",
       mansione: "",
       produzione: "false",
       qualita: "false",
@@ -50,17 +50,19 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
     onSuccess: (res) => {
       if (res?.data) {
         const { idCorsoFormativo } = res.data.data;
-        getValues("machine").map(
-          async (item) =>
-            await postCorsoformativoMacchina({
-              body: {
-                idCorso: idCorsoFormativo,
-                idMacchina: item.idMacchina,
-              },
-              id: idCorsoFormativo,
-              machineId: item.idMacchina,
-            })
-        );
+        getValues("machine")
+          .filter((item) => item.idMacchina !== "")
+          .map(
+            async (item) =>
+              await postCorsoformativoMacchina({
+                body: {
+                  idCorso: idCorsoFormativo,
+                  idMacchina: item.idMacchina,
+                },
+                id: idCorsoFormativo,
+                machineId: item.idMacchina,
+              })
+          );
       }
 
       queryClient.invalidateQueries("corsoformativo-pagination");
@@ -95,7 +97,13 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   );
 
   return (
-    <Dialog isOpen={isOpen} closeModal={closeModal}>
+    <Dialog
+      isOpen={isOpen}
+      closeModal={() => {
+        reset();
+        closeModal();
+      }}
+    >
       <Dialog.Title
         as="h2"
         className="p-5 flex items-center w-full justify-between border-b border-b-black border-opacity-10 font-semibold"
@@ -179,15 +187,18 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Emissione:</label>
-
-            <DatePicker
-              placeholder="Pick a date"
-              onChange={(val) =>
-                setValue(
-                  "emissione",
-                  new Date(val?.toString() || "").toISOString()
-                )
-              }
+            <Controller
+              control={control}
+              name="emissione"
+              render={({ field: { value, onChange } }) => (
+                <DatePicker
+                  value={value}
+                  placeholder="Pick a date"
+                  onChange={(val) =>
+                    onChange(new Date(val?.toString() || "").toISOString())
+                  }
+                />
+              )}
             />
           </div>
           <div className="flex flex-col items-start gap-y-2 w-full">
@@ -323,17 +334,35 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
               </div>
             </div>
           </div>
-        </div>
-        <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Management:</label>
-            <input
-              className="input input-bordered w-full"
-              {...register("managment", {
-                required: true,
-              })}
-            />
+            <div className="flex">
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="true"
+                    {...register("managment")}
+                  />
+                  <span className="label-text">Yes</span>
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="false"
+                    {...register("managment")}
+                  />
+                  <span className="label-text">No</span>
+                </label>
+              </div>
+            </div>
           </div>
+        </div>
+        <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Vision:</label>
             <input
@@ -345,6 +374,7 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
           </div>
         </div>
         <div className="flex flex-col gap-y-4">
+          <label className="text-sm text-gray-800">Seleziona le macchine</label>
           {fields.map((_item, index) => (
             <div
               className="flex flex-col items-start gap-y-2 w-full"
@@ -355,8 +385,6 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
                   control={control}
                   render={({ field }) => (
                     <div className="flex flex-col items-start gap-y-2 w-full">
-                      <label className="text-sm text-gray-800">Machine</label>
-
                       <select
                         id={`${index}.inventory`}
                         className="select select-bordered w-full bg-white"
@@ -412,14 +440,14 @@ function StandardCreateDialog({ closeModal, isOpen }: IExtendedDialogProps) {
           ))}
           <button
             type="button"
-            className="btn btn-ghost bg-blue-500 w-fit text-white"
+            className="btn btn-success w-fit text-white"
             onClick={() =>
               append({
                 idMacchina: "",
               })
             }
           >
-            Add
+            Add Macchine
           </button>
         </div>
         <button className="btn btn-success btn-green-600 w-fit ms-auto">

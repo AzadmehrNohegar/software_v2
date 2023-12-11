@@ -104,7 +104,7 @@ function GestioneStandard() {
                     className="border-start px-5 py-4 border text-[13px] border-slate-100 w-min"
                     align="right"
                   >
-                    <button className="btn p-0 text-warning btn-ghost btn-link decoration-transparent">
+                    <button className="btn p-0 text-success btn-ghost btn-link decoration-transparent">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"

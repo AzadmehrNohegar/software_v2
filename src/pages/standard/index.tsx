@@ -155,7 +155,7 @@ function Standard() {
                     align="right"
                   >
                     <button
-                      className="btn p-0 text-warning btn-ghost btn-link decoration-transparent"
+                      className="btn p-0 text-success btn-ghost btn-link decoration-transparent"
                       onClick={(e) => {
                         e.preventDefault();
                         e.stopPropagation();

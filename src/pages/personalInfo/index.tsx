@@ -1,9 +1,10 @@
 import { Fragment, useState } from "react";
 import { Pagination } from "../../shared/pagination";
-import PersonalInfoCreateDialog from "./partials/personalnfoCreateDialog";
+import { PersonalInfoCreateDialog } from "./partials/personalnfoCreateDialog";
 import { useLocation, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useQuery } from "react-query";
+import { PersonalInfoEditDialog } from "./partials/personalInfoEditDialog";
 
 function PersonalInfo() {
   const [isPersonalInfoCreateDialogOpen, setIsPersonalInfoCreateDialogOpen] =
@@ -37,7 +38,7 @@ function PersonalInfo() {
   return (
     <Fragment>
       <div className="py-16 container-xxl px-8 flex items-center justify-between">
-        <h1 className="text-3xl font-semibold text-white">Personal Info</h1>
+        <h1 className="text-3xl font-semibold text-white">Anagrafica</h1>
         <button
           className="btn bg-slate-100 text-slate-500 font-light"
           onClick={() => setIsPersonalInfoCreateDialogOpen(true)}
@@ -110,7 +111,13 @@ function PersonalInfo() {
                     className="border-start px-5 py-4 border text-[13px] border-slate-100 w-min"
                     align="right"
                   >
-                    <button className="btn p-0 text-warning btn-ghost btn-link decoration-transparent">
+                    <button
+                      className="btn p-0 text-success btn-ghost btn-link decoration-transparent"
+                      onClick={() => {
+                        searchParams.set("id", item.idAnagrafica);
+                        setSearchParams(searchParams);
+                      }}
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="16"
@@ -147,6 +154,10 @@ function PersonalInfo() {
       <PersonalInfoCreateDialog
         isOpen={isPersonalInfoCreateDialogOpen}
         closeModal={() => setIsPersonalInfoCreateDialogOpen(false)}
+      />
+      <PersonalInfoEditDialog
+        isOpen={!!searchParams.get("id")}
+        closeModal={() => setSearchParams("")}
       />
     </Fragment>
   );

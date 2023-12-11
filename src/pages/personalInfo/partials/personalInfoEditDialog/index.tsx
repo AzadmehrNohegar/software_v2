@@ -2,16 +2,31 @@ import { Controller, useForm } from "react-hook-form";
 import { DatePicker } from "../../../../components/datepicker";
 import { Dialog } from "../../../../components/dialog";
 import { IExtendedDialogProps } from "../../../../model";
-import { useMutation, useQueryClient } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
+import { useSearchParams } from "react-router-dom";
 
-function PersonalInfoCreateDialog({
-  closeModal,
-  isOpen,
-}: IExtendedDialogProps) {
+function PersonalInfoEditDialog({ closeModal, isOpen }: IExtendedDialogProps) {
   const queryClient = useQueryClient();
 
-  const { register, setValue, handleSubmit, control, reset } = useForm({
+  const [searchParams] = useSearchParams();
+
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getAnagrafica = async () => {
+    return await axios.get(
+      `http://3.76.7.86:9980/anagrafica/${searchParams.get("id")}`
+    );
+  };
+
+  const { data: anagrafica } = useQuery(
+    `anagrafica-pagination-${searchParams.get("id")}`,
+    () => getAnagrafica(),
+    {
+      enabled: !!searchParams.get("id"),
+    }
+  );
+
+  const { register, setValue, handleSubmit, control } = useForm({
     defaultValues: {
       cittaResidenza: "",
       codiceFiscale: "",
@@ -23,6 +38,20 @@ function PersonalInfoCreateDialog({
       mansione: "",
       nome: "",
       numeroTelefono: "",
+      idAnagrafica: "",
+    },
+    values: {
+      cittaResidenza: anagrafica?.data.data.cittaResidenza || "",
+      codiceFiscale: anagrafica?.data.data.codiceFiscale || "",
+      cognome: anagrafica?.data.data.cognome || "",
+      contratto: anagrafica?.data.data.contratto || "",
+      dataFineContratto: anagrafica?.data.data.dataFineContratto || "",
+      dataNascita: anagrafica?.data.data.dataNascita || "",
+      indirizzoResidenza: anagrafica?.data.data.indirizzoResidenza || "",
+      mansione: anagrafica?.data.data.mansione || "",
+      nome: anagrafica?.data.data.nome || "",
+      numeroTelefono: anagrafica?.data.data.numeroTelefono || "",
+      idAnagrafica: +anagrafica?.data.data.idAnagrafica || "",
     },
   });
 
@@ -31,7 +60,7 @@ function PersonalInfoCreateDialog({
     return await axios.post("http://3.76.7.86:9980/anagrafica", body);
   };
 
-  const createAnagrafica = useMutation(postAnagrafica, {
+  const editAnagrafica = useMutation(postAnagrafica, {
     onSuccess: () => {
       queryClient.invalidateQueries();
       closeModal();
@@ -40,20 +69,14 @@ function PersonalInfoCreateDialog({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const onSubmit = (values: any) =>
-    createAnagrafica.mutate({
+    editAnagrafica.mutate({
       body: {
         ...values,
       },
     });
 
   return (
-    <Dialog
-      isOpen={isOpen}
-      closeModal={() => {
-        reset();
-        closeModal();
-      }}
-    >
+    <Dialog isOpen={isOpen} closeModal={closeModal}>
       <Dialog.Title
         as="h2"
         className="p-5 flex items-center w-full justify-between border-b border-b-black border-opacity-10 font-semibold"
@@ -304,4 +327,4 @@ function PersonalInfoCreateDialog({
   );
 }
 
-export { PersonalInfoCreateDialog };
+export { PersonalInfoEditDialog };
