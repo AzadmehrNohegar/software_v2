@@ -88,16 +88,6 @@ function Layout() {
       <main className="min-h-[300px]">
         <Outlet />
       </main>
-      <footer className="container-xxl py-2">
-        <span className="text-[13px] text-gray-300">2021©</span>{" "}
-        <a
-          href="https://keenthemes.com"
-          target="_blank"
-          className="text-gray-800 hover:text-blue-500 transition-colors text-[13px]"
-        >
-          Stefano
-        </a>
-      </footer>
     </Fragment>
   );
 }

@@ -144,7 +144,7 @@ function GestioneStandardCreateDialog({
         )}
       >
         <div className="flex gap-x-4 items-center">
-          <div className="flex flex-col items-start gap-y-2 w-full">
+          {/* <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Cognome:</label>
             <input
               className="input input-bordered w-full"
@@ -152,20 +152,101 @@ function GestioneStandardCreateDialog({
                 required: true,
               })}
             />
-          </div>
+          </div> */}
           <div className="flex flex-col items-start gap-y-2 w-full">
-            <label className="text-sm text-gray-800">Nome:</label>
-            <input
+            <label className="text-sm text-gray-800">Nome Autocomplete:</label>
+            {/* <input
               className="input input-bordered w-full"
               {...register("nome", {
                 required: true,
               })}
-            />
+            /> */}
+            <select
+              className="select select-bordered w-full bg-white"
+              {...register("nome", {
+                required: true,
+              })}
+            >
+              <option></option>
+              PSA NIS PS MG NI WI
+              <option value="PSA">Ricardo</option>
+              <option value="NIS">Stefano</option>
+              <option value="PS">Francessca</option>
+              <option value="MG">Amigo</option>
+              {/* <option value="NI">NI</option> */}
+              {/* <option value="WI">WI</option> */}
+            </select>
           </div>
         </div>
-
         <div className="flex gap-x-4 items-center">
           <div className="flex flex-col items-start gap-y-2 w-full">
+            <label className="text-sm text-gray-800">Reparto:</label>
+            <select className="select select-bordered w-full bg-white">
+              <option></option>
+              PSA NIS PS MG NI WI
+              <option value="PSA">PSA</option>
+              <option value="NIS">NIS</option>
+              <option value="PS">PS </option>
+              <option value="MG">MG</option>
+              <option value="NI">NI</option>
+              <option value="WI">WI</option>
+            </select>
+          </div>
+          <div className="flex flex-col justify-start items-start gap-x-2 w-full">
+            <label className="text-sm text-gray-800">Check:</label>
+            <div className="flex">
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="true"
+                  />
+                  <span className="label-text">Yes</span>
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="false"
+                  />
+                  <span className="label-text">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-x-4 items-center">
+          <div className="flex flex-col justify-start items-start gap-x-2 w-full">
+            <label className="text-sm text-gray-800">Internale:</label>
+            <div className="flex">
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="true"
+                  />
+                  <span className="label-text">Yes</span>
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label cursor-pointer flex items-center gap-x-1">
+                  <input
+                    type="radio"
+                    className="radio checked:bg-blue-500"
+                    value="false"
+                  />
+                  <span className="label-text">No</span>
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-x-4 items-center">
+          {/* <div className="flex flex-col items-start gap-y-2 w-full">
             <label className="text-sm text-gray-800">Citta:</label>
             <input
               className="input input-bordered w-full"
@@ -173,7 +254,7 @@ function GestioneStandardCreateDialog({
                 required: true,
               })}
             />
-          </div>
+          </div> */}
           {/* <div className="flex flex-col justify-start items-start gap-x-2 w-full">
             <label className="text-sm text-gray-800">Safety:</label>
             <div className="flex">
@@ -233,6 +314,19 @@ function GestioneStandardCreateDialog({
                   name={`machine.${index}.idMacchina`}
                   control={control}
                 />
+                <div className="flex flex-col items-start gap-y-2 w-1/2">
+                  <label className="text-sm text-gray-800">Level:</label>
+                  <select className="select select-bordered w-full bg-white">
+                    <option></option>
+                    PSA NIS PS MG NI WI
+                    <option value="PSA">PSA</option>
+                    <option value="NIS">NIS</option>
+                    <option value="PS">PS </option>
+                    <option value="MG">MG</option>
+                    <option value="NI">NI</option>
+                    <option value="WI">WI</option>
+                  </select>
+                </div>
                 <button
                   type="button"
                   className="btn btn-ghost bg-red-100 text-red-500 p-1 rounded-md btn-square"

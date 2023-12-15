@@ -61,7 +61,7 @@ function PersonalInfo() {
         <div className="overflow-x-auto max-w-full w-full">
           <table className="table border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-gray-800">
+              <tr className="bg-green-50 text-gray-800">
                 <th className="font-normal text-sm px-5 py-4 border border-slate-100">
                   Codice Fiscale
                 </th>

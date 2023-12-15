@@ -61,7 +61,7 @@ function GestioneStandard() {
         <div className="overflow-x-auto max-w-full w-full">
           <table className="table border-collapse">
             <thead>
-              <tr className="bg-slate-50 text-gray-800">
+              <tr className="bg-green-50 text-gray-800">
                 <th className="font-normal text-sm px-5 py-4 border border-slate-100">
                   Cognome
                 </th>
@@ -72,9 +72,11 @@ function GestioneStandard() {
                   Reparto
                 </th>
                 <th className="font-normal text-sm px-5 py-4 border border-slate-100">
-                  Citta
+                  Internale
                 </th>
-
+                <th className="font-normal text-sm px-5 py-4 border border-slate-100">
+                  Check
+                </th>
                 <th className="font-normal text-sm px-5 py-4 border border-slate-100"></th>
               </tr>
             </thead>
@@ -97,9 +99,11 @@ function GestioneStandard() {
                     {item.contratto}
                   </td>
                   <td className="border-start px-5 py-4 border text-[13px] border-slate-100">
-                    {item.cittaResidenza}
+                    No
                   </td>
-
+                  <td className="border-start px-5 py-4 border text-[13px] border-slate-100">
+                    Yes
+                  </td>
                   <td
                     className="border-start px-5 py-4 border text-[13px] border-slate-100 w-min"
                     align="right"
